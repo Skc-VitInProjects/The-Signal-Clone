@@ -1,10 +1,9 @@
 # Environments & Python
-backend/__pycache__/
-backend/*/__pycache__/
-backend/*/*/__pycache__/
+__pycache__/
 *.pyc
 *.pyo
 *.pyd
+.pytest_cache/
 .Python
 backend/venv/
 backend/env/
