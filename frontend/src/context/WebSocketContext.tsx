@@ -34,9 +34,14 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
     }
 
     let isMounted = true;
+    let reconnectAttempts = 0;
 
     function connect() {
-      if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      if (
+        socketRef.current &&
+        (socketRef.current.readyState === WebSocket.OPEN ||
+          socketRef.current.readyState === WebSocket.CONNECTING)
+      ) {
         return;
       }
 
@@ -44,9 +49,12 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
-        if (!isMounted) return;
+        if (!isMounted) {
+          ws.close();
+          return;
+        }
+        reconnectAttempts = 0;
         setIsConnected(true);
-        console.log('Signal WebSocket connected successfully.');
       };
 
       ws.onmessage = (event) => {
@@ -69,19 +77,25 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
         }
       };
 
-      ws.onclose = () => {
+      ws.onclose = (event) => {
         if (!isMounted) return;
-        setIsConnected(false);
-        // Attempt reconnect after 3 seconds
+        if (socketRef.current === ws) {
+          socketRef.current = null;
+          setIsConnected(false);
+        }
+
+        // 4001 = authentication rejected by the server; retrying with the
+        // same token is pointless.
+        if (event.code === 4001) return;
+
+        // Exponential backoff: 1s, 2s, 4s ... capped at 30s
+        const delay = Math.min(1000 * 2 ** reconnectAttempts, 30000);
+        reconnectAttempts += 1;
         reconnectTimeoutRef.current = setTimeout(() => {
           if (isMounted && token) {
             connect();
           }
-        }, 3000);
-      };
-
-      ws.onerror = (err) => {
-        console.warn('WebSocket encountered error:', err);
+        }, delay);
       };
 
       socketRef.current = ws;
