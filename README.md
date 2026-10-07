@@ -2,6 +2,20 @@
 
 A production-grade, secure messaging platform modeled after the official Signal Messenger app. Built with **Next.js (TypeScript)** on the frontend and **Python (FastAPI)** on the backend, featuring real-time WebSockets, SQLite database persistence, and Signal's design aesthetics.
 
+## 🚀 Live Demo
+
+Try the deployed application here:
+
+**[https://the-signal-clone.vercel.app/](https://the-signal-clone.vercel.app/)**
+
+For quick evaluation, use one of the pre-seeded demo users with the fixed mock OTP `123456`:
+
+- `sarah_c`
+- `alex_r`
+- `david_k`
+- `maria_s`
+- `elena_r`
+
 ---
 
 ## 📸 Overview & Features

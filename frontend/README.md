@@ -1,5 +1,11 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Live Demo
+
+The deployed application is available at:
+
+**[https://the-signal-clone.vercel.app/](https://the-signal-clone.vercel.app/)**
+
 ## Getting Started
 
 First, run the development server:
